@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=Permanent+Marker&family=Space+Grotesk:wght@400;500;700&display=swap');
+
+:root {
+  /* Bază închisă — negru cu urmă caldă, nu #000 pur */
+  --ink: #0d0b0c;
+  --ink-soft: #1a1618;
+  --ink-card: #211c1f;
+
+  /* Crem rămâne, dar ca ACCENT: benzi rupte de hârtie, stickere, secțiuni scurte */
+  --paper: #f2ead8;
+
+  --text: #f5f0ea;
+  --text-dim: #a9a09c;
+
+  /* Accente punk — folosite ca pete de culoare, nu ca fundaluri */
+  --shock-pink: #ff3d9a;
+  --electric-purple: #9b4dff;
+  --acid-green: #2fe06a;
+  --electric-blue: #2bb8ff;
+
+  /* Curcubeul — o singură dată definit, folosit în 2-3 momente-cheie */
+  --rainbow: linear-gradient(
+    90deg,
+    var(--shock-pink) 0%,
+    var(--electric-purple) 33%,
+    var(--electric-blue) 66%,
+    var(--acid-green) 100%
+  );
+
+  /* Tipografie */
+  --font-display: 'Archivo Black', sans-serif;
+  --font-marker: 'Permanent Marker', cursive;
+  --font-body: 'Space Grotesk', sans-serif;
+
+  /* Ritm — spațiere consistentă (partea de "feng shui") */
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 32px;
+  --space-lg: 64px;
+  --space-xl: 120px;
+
+  --radius: 4px;
+  --border-punk: 3px solid var(--ink);
+}
