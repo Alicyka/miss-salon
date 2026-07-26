@@ -1,75 +1,82 @@
-# React + TypeScript + Vite
+# MISS Salon
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A website for a hair salon specialising in vivid, creative colour, built around an
+AI consultant that helps clients decide what they want before they book.
 
-Currently, two official plugins are available:
+**🔗 Live demo:** https://miss-salon.vercel.app
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## What it does
 
-## React Compiler
+- **Full salon site** — services with pricing, filterable portfolio, before/after
+  comparison slider, stylist bio, contact with map
+- **AI hair consultant, in 4 steps:**
+  1. Upload a photo — compressed in the browser (5 MB → ~150 KB)
+  2. Visual analysis — length, texture, colour, condition (Gemini, server-side)
+  3. Colour try-on — hair segmentation on-device, the photo never leaves the device
+  4. A brief is generated for the stylist and sent over WhatsApp
+- **WhatsApp booking** with a pre-filled message per service
+- **GDPR-compliant** — cookie consent banner, the Google map only loads after consent
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech stack
 
-## Expanding the ESLint configuration
+React · TypeScript · Vite · React Router · MediaPipe Tasks Vision ·
+Vercel Functions · Gemini API
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Technical decisions
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+**On-device segmentation instead of a paid image API.**
+The colour try-on runs entirely in the browser (MediaPipe hair segmentation + HSL
+pixel manipulation on canvas). It costs nothing, is instant after the first load, and
+the client's photo never leaves their device — which also solves the privacy requirement.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+**Recolouring in HSL space.**
+Only hue and saturation are replaced, keeping each pixel's original luminance. This
+preserves strands, shadows and shine instead of producing a flat patch of colour.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+**LLM key kept strictly server-side.**
+The analysis goes through a serverless function on Vercel. The API key lives in
+`process.env`, never in the browser bundle.
 
+**Content separated from code.**
+All copy, services, prices and images live in `src/content/`. The site can be
+rebranded without touching a single component.
+
+## Known trade-offs
+
+- **SPA, not SSR.** Dynamic meta tags are set with JS, so crawlers that don't run
+  JavaScript (Facebook, WhatsApp) only see the tags in `index.html`. For a local
+  salon, whose traffic comes from Instagram and Google Maps, this is acceptable.
+  Next.js would be the right call at larger scale.
+- **The AI response is not schema-validated.** A type assertion is used; in production
+  I would add Zod.
+- **Segmentation changes colour only**, not length or haircut.
+
+## Running locally
+
+```bash
+npm install
+npm run dev        # frontend only
+vercel dev         # frontend + serverless functions (needed for the consultant)
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+For the AI consultant, create a `.env` file in the project root:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```
+GEMINI_API_KEY=your_key
+```
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Get a free key from Google AI Studio (https://aistudio.google.com).
 
+## Project structure
+
+```
+api/                    serverless functions (AI analysis)
+src/
+  components/           components, grouped by section
+  content/              all editable copy and data
+  context/              cookie consent
+  hooks/                reusable logic
+  pages/                one file per route
+  styles/               theme → base → layout → components
+  utils/                pure functions (image, colour, brief)
 ```
