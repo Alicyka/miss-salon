@@ -8,9 +8,12 @@ import ConsultantPage from './pages/ConsultantPage';
 import ContactPage from './pages/ContactPage';
 import NotFoundPage from './pages/NotFoundPage';
 import LegalPage from './pages/LegalPage';
+import ScrollToTop from './components/layout/ScrollToTop';
 
 function App() {
   return (
+    <>
+      <ScrollToTop />
     <Routes>
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
@@ -23,6 +26,7 @@ function App() {
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
+    </>
   );
 }
 

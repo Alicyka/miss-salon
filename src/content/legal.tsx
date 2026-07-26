@@ -1,8 +1,8 @@
 export interface LegalSection {
   heading: string;
   body: string[];
-}
-
+} 
+ 
 export interface LegalDoc {
   slug: string;
   title: string;
