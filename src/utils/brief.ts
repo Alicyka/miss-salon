@@ -1,60 +1,54 @@
 import type { HairAnalysis } from '../content/analysis';
 import type { HairColor } from '../content/colors';
 
-export interface Preferences {
-  goal: string;
-  changeLevel: 'subtil' | 'mediu' | 'radical';
-  timing: 'saptamana-asta' | 'luna-asta' | 'flexibil';
-  previouslyColored: 'nu' | 'vopsit' | 'decolorat';
+export interface BriefInput {
+  analysis: HairAnalysis | null;
+  color: HairColor | null;
+  changeLevel: string;
+  budget: string;
+  timing: string;
+  maintenance: string;
+  note: string;
 }
 
-const timingLabels: Record<Preferences['timing'], string> = {
-  'saptamana-asta': 'săptămâna asta',
-  'luna-asta': 'luna aceasta',
-  'flexibil': 'sunt flexibilă',
-};
-
-const historyLabels: Record<Preferences['previouslyColored'], string> = {
-  'nu': 'părul meu este natural, nevopsit',
-  'vopsit': 'am părul vopsit',
-  'decolorat': 'am părul decolorat',
-};
+const labelOf = (options: { value: string; label: string }[], value: string) =>
+  options.find((option) => option.value === value)?.label ?? '';
 
 export const buildBrief = (
-  prefs: Preferences,
-  color: HairColor | null,
-  analysis: HairAnalysis | null
+  input: BriefInput,
+  labels: {
+    changeLevels: { value: string; label: string }[];
+    budgets: { value: string; label: string }[];
+    timings: { value: string; label: string }[];
+    maintenanceLevels: { value: string; label: string }[];
+  }
 ): string => {
-  const lines: string[] = ['Bună! Am folosit consultantul de pe site și am pregătit ce îmi doresc:'];
+  const lines: (string | false)[] = [
+    'Bună! Am folosit consultantul de pe site și uite ce mi-a ieșit:',
+    '',
+    input.color ? `CE ÎMI DORESC: ${input.color.name}` : false,
+    input.color?.needsBleach ? '(am văzut că necesită decolorare)' : false,
+    input.color ? '' : false,
 
-  if (prefs.goal.trim()) {
-    lines.push('', `CE ÎMI DORESC: ${prefs.goal.trim()}`);
-  }
+    input.analysis ? 'PĂRUL MEU ACUM (estimare din poză):' : false,
+    input.analysis ? `• Lungime: ${input.analysis.length}` : false,
+    input.analysis ? `• Textură: ${input.analysis.texture}` : false,
+    input.analysis ? `• Densitate: ${input.analysis.thickness}` : false,
+    input.analysis ? `• Culoare actuală: ${input.analysis.currentColor}` : false,
+    input.analysis ? `• Stare: ${input.analysis.condition}` : false,
+    input.analysis ? '' : false,
 
-  if (color) {
-    const bleach = color.needsBleach ? ' (știu că necesită decolorare)' : '';
-    lines.push('', `CULOARE DORITĂ: ${color.name}${bleach}`);
-  }
+    'PREFERINȚE:',
+    input.changeLevel && `• Schimbare: ${labelOf(labels.changeLevels, input.changeLevel)}`,
+    input.budget && `• Buget: ${labelOf(labels.budgets, input.budget)}`,
+    input.timing && `• Când: ${labelOf(labels.timings, input.timing)}`,
+    input.maintenance && `• Întreținere: ${labelOf(labels.maintenanceLevels, input.maintenance)}`,
 
-  lines.push('', `SCHIMBARE: ${prefs.changeLevel}`);
-  lines.push(`ISTORIC: ${historyLabels[prefs.previouslyColored]}`);
-  lines.push(`CÂND: ${timingLabels[prefs.timing]}`);
+    input.note.trim() ? '' : false,
+    input.note.trim() ? `MENȚIUNI: ${input.note.trim()}` : false,
+    '',
+    'Ce zici, se poate?',
+  ];
 
-  if (analysis) {
-    lines.push(
-      '',
-      'ANALIZA AUTOMATĂ (orientativă):',
-      `${analysis.length}, ${analysis.texture}, ${analysis.thickness}`,
-      `culoare actuală: ${analysis.currentColor} (subton ${analysis.undertone})`,
-      `stare: ${analysis.condition}`
-    );
-
-    if (analysis.observations.length > 0) {
-      lines.push(`observații: ${analysis.observations.join('; ')}`);
-    }
-  }
-
-  lines.push('', 'Îți trimit și o poză. Când ai o programare liberă?');
-
-  return lines.join('\n');
+  return lines.filter(Boolean).join('\n');
 };

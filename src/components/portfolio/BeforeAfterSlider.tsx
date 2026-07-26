@@ -29,10 +29,10 @@ const BeforeAfterSlider = ({ item }: Props) => {
         }}
         onPointerDown={(e) => updatePosition(e.clientX)}
       >
-        <img src={item.after} alt={`După: ${item.alt}`} className="ba-image" />
+        <img src={item.after} alt={`După: ${item.alt}`} className="ba-image" draggable={false} />
 
         <div className="ba-before-layer" style={{ width: `${position}%` }}>
-          <img src={item.before} alt={`Înainte: ${item.alt}`} className="ba-image ba-image-fixed" />
+          <img src={item.before} alt={`Înainte: ${item.alt}`} className="ba-image ba-image-fixed" draggable={false} />
         </div>
 
         <div className="ba-handle" style={{ left: `${position}%` }} aria-hidden="true">

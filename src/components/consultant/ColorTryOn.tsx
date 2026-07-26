@@ -9,8 +9,8 @@ interface Props {
 
 const ColorTryOn = ({ photo, onColorPicked }: Props) => {
   const [selected, setSelected] = useState<HairColor | null>(null);
-  const [intensity, setIntensity] = useState(0.85);
-  const [lift, setLift] = useState(0.35);
+  const [intensity, setIntensity] = useState(0.6);
+  const [lift, setLift] = useState(0.15);
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'error'>('idle');
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
