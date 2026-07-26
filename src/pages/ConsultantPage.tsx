@@ -5,11 +5,25 @@ import { useHairAnalysis } from '../hooks/useHairAnalysis';
 import AnalysisResult from '../components/consultant/AnalysisResult';
 import ColorTryOn from '../components/consultant/ColorTryOn';
 import type { HairColor } from '../content/colors';
+import BriefForm from '../components/consultant/BriefForm';
+import BriefPanel from '../components/consultant/BriefPanel';
+import { buildBrief, type Preferences } from '../utils/brief';
+
+
 
 const ConsultantPage = () => {
   const [photo, setPhoto] = useState<string | null>(null);
   const { analysis, isLoading, error, analyze, reset } = useHairAnalysis();
   const [pickedColor, setPickedColor] = useState<HairColor | null>(null);
+  const [prefs, setPrefs] = useState<Preferences>({
+  goal: '',
+  changeLevel: 'mediu',
+  timing: 'flexibil',
+  previouslyColored: 'nu',
+});
+
+const brief = buildBrief(prefs, pickedColor, analysis);
+  
   return (
     <>
       <section className="page-header">
@@ -68,6 +82,13 @@ const ConsultantPage = () => {
       </button>
     </>
   )}
+  <div className="consultant-brief">
+  <SectionHeading eyebrow="Ultimul pas" title="Trimite-i lui Alice" />
+  <div className="brief-grid">
+    <BriefForm value={prefs} onChange={setPrefs} />
+    <BriefPanel brief={brief} />
+  </div>
+</div>
 </div>
             </div>
           )}
