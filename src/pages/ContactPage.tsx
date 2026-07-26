@@ -2,17 +2,21 @@ import SectionHeading from '../components/ui/SectionHeading';
 import { site, salonLocation } from '../content/site';
 import { schedule } from '../content/about';
 import { whatsappUrl } from '../utils/whatsapp';
+import { useConsent } from '../context/ConsentContext';
 
-const ContactPage = () => (
-  <>
-    <section className="page-header">
-      <div className="container">
-        <SectionHeading eyebrow="Contact" title="Hai să ne vedem">
-          Cel mai rapid răspuns îl primești pe WhatsApp. Scrie-mi ce vrei să faci
-          și îți spun ce se poate și cât durează.
-        </SectionHeading>
-      </div>
-    </section>
+const ContactPage = () => {
+  const { consent } = useConsent();
+
+  return (
+    <>
+      <section className="page-header">
+        <div className="container">
+          <SectionHeading eyebrow="Contact" title="Hai să ne vedem">
+            Cel mai rapid răspuns îl primești pe WhatsApp. Scrie-mi ce vrei să faci
+            și îți spun ce se poate și cât durează.
+          </SectionHeading>
+        </div>
+      </section>
 
     <section className="section">
       <div className="container contact-grid">
@@ -60,18 +64,32 @@ const ContactPage = () => (
           </div>
         </div>
 
-        <div className="contact-map">
-          <iframe
-            src={salonLocation.mapEmbedUrl}
-            title={`Harta către ${site.name}`}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-            allowFullScreen
-          />
-        </div>
+<div className="contact-map">
+  {consent === 'accepted' ? (
+    <iframe
+      src={salonLocation.mapEmbedUrl}
+      title={`Harta către ${site.name}`}
+      loading="lazy"
+      referrerPolicy="no-referrer-when-downgrade"
+      allowFullScreen
+    />
+  ) : (
+    <div className="map-placeholder">
+      <p>Harta Google se încarcă doar cu acordul tău pentru cookie-uri.</p>
+      <a
+        href={salonLocation.mapLinkUrl}
+        className="btn btn-secondary"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Deschide în Google Maps
+      </a>
+    </div>
+  )}
+</div>
       </div>
     </section>
   </>
 );
-
+}
 export default ContactPage;
