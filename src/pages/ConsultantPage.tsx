@@ -3,11 +3,13 @@ import SectionHeading from '../components/ui/SectionHeading';
 import PhotoUpload from '../components/consultant/PhotoUpload';
 import { useHairAnalysis } from '../hooks/useHairAnalysis';
 import AnalysisResult from '../components/consultant/AnalysisResult';
+import ColorTryOn from '../components/consultant/ColorTryOn';
+import type { HairColor } from '../content/colors';
 
 const ConsultantPage = () => {
   const [photo, setPhoto] = useState<string | null>(null);
   const { analysis, isLoading, error, analyze, reset } = useHairAnalysis();
-
+  const [pickedColor, setPickedColor] = useState<HairColor | null>(null);
   return (
     <>
       <section className="page-header">
@@ -27,12 +29,12 @@ const ConsultantPage = () => {
           ) : (
             <div className="consultant-workspace">
               <div className="consultant-photo">
-                <img src={photo} alt="Poza încărcată de tine" />
-                <button className="btn btn-secondary" onClick={() =>{ setPhoto(null); reset()}}>
-                  Schimbă poza
+              <ColorTryOn photo={photo} onColorPicked={setPickedColor} />
+               <button className="btn btn-secondary" onClick={() => { setPhoto(null); reset(); setPickedColor(null); }}>
+                 Schimbă poza
                 </button>
               </div>
-              <div className="consultant-panel">
+            <div className="consultant-panel">
   {!analysis && !isLoading && (
     <>
       <p className="consultant-intro">
