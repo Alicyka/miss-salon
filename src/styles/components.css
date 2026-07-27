@@ -411,12 +411,22 @@
   position: relative; overflow: hidden; border-radius: var(--radius);
   aspect-ratio: 4/5; max-width: 500px; touch-action: none; user-select: none; cursor: ew-resize;
 }
-.ba-image { width: 100%; height: 100%; object-fit: cover; display: block; }
-.ba-before-layer { position: absolute; inset: 0; overflow: hidden; }
-.ba-image-fixed { width: 500px; max-width: none; }
-.ba-handle {
-  position: absolute; top: 0; bottom: 0; width: 3px;
-  background: var(--text); transform: translateX(-50%); pointer-events: none;
+.ba-before-layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.ba-before-layer .ba-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.ba-image-fixed {
+  width: 100%;
+  max-width: none;
 }
 .ba-handle-grip {
   position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
